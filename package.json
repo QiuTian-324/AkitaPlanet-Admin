@@ -12,6 +12,7 @@
     "@vueuse/core": "^10.7.0",
     "axios": "^1.6.2",
     "dayjs": "^1.11.10",
+    "echarts": "^5.4.3",
     "highlight.js": "^11.9.0",
     "md-editor-v3": "^4.9.0",
     "naive-ui": "^2.35.0",
