@@ -34,9 +34,7 @@ export default defineConfig((configEnv) => {
       },
     },
     // https://cn.vitejs.dev/guide/api-javascript.html#build
-    build: {
-      chunkSizeWarningLimit: 1024, // chunk 大小警告的限制（单位kb）
-    },
+
     esbuild: {
       drop: ['debugger'], // console
     },
