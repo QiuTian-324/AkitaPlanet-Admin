@@ -10,7 +10,7 @@ import CrudModal from '@/components/crud/CrudModal.vue'
 import UploadOne from '@/components//UploadOne.vue'
 
 import { articleTypeOptions } from '@/assets/config'
-import { useTagStore } from '@/store'
+import {useTagStore, useThemeStore} from '@/store'
 import api from '@/api'
 
 defineOptions({ name: '发布文章' })
@@ -18,7 +18,7 @@ defineOptions({ name: '发布文章' })
 const route = useRoute()
 // const router = useRouter()
 const tagStore = useTagStore()
-
+const themeStore = useThemeStore()
 const categoryOptions = ref([]) // 分类选项
 const tagOptions = ref([]) // 标签选项
 let backTagOptions = [] // 备份标签选项
@@ -158,11 +158,11 @@ function renderTag(tag, index) {
 
 <template>
   <CommonPage :show-header="false" title="写文章">
-    <div class="mb-4 flex items-center bg-white space-x-2">
+    <div class="mb-4 flex items-center bg-white dark:bg-[#18181C] space-x-2">
       <NInput
         v-model:value="formModel.title"
         type="text"
-        class="mr-5 flex-1 py-1 text-lg color-primary font-bold"
+        class="mr-5 flex-1 py-1 text-lg color-primary  font-bold"
         placeholder="输入文章标题..."
       />
       <NButton ghost type="error" :loading="btnLoading" @click="handleDraft">
@@ -180,7 +180,7 @@ function renderTag(tag, index) {
     </div>
 
     <!-- TODO: 文件上传 -->
-    <MdEditor v-model="formModel.content" style="height: calc(100vh - 245px)" />
+    <MdEditor v-model="formModel.content" :auto-focus="true" :theme="themeStore.darkMode?'dark':'light'"  style="height: calc(100vh - 245px)" />
 
     <CrudModal
       v-model:visible="modalVisible"

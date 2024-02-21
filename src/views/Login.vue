@@ -20,7 +20,7 @@ const router = useRouter()
 const { query } = useRoute()
 
 const loginForm = reactive({
-  username: 'guest',
+  username: 'admin',
   password: '123456',
 })
 
@@ -67,7 +67,7 @@ async function handleLogin() {
         router.push({ path, query })
       }
       else {
-        router.push('/')
+        router.push('/home')
       }
     }
     finally {
@@ -92,13 +92,14 @@ async function handleLogin() {
 <template>
   <!-- FIXME: 使用 style="background-image: url(/image/login_bg.webp);" 不生效, 需要写到 style 里的 class 中 -->
   <AppPage class="backgroundImg bg-cover">
-    <div style="transform: translateY(25px)" class="m-auto max-w-[700px] min-w-[345px] flex items-center justify-center rounded-2 bg-white bg-opacity-60 p-4 shadow">
-      <div class="hidden w-[380px] px-5 py-9 md:block">
-        <img src="/image/login_banner.webp" class="w-full" alt="login_banner">
+    <div style="transform: translateY(25px)" class="m-auto  max-w-[700px] min-w-[345px]  flex items-center justify-center rounded-2 bg-white p-4 shadow">
+      <div class="hidden w-[350px] px-5 py-9 md:block">
+        <img src="/image/login_banner.svg" class="w-full bg-cover rounded-xl" alt="login_banner">
       </div>
 
       <div class="w-[320px] flex flex-col px-4 py-9 space-y-5.5">
-        <h5 class="flex items-center justify-center text-2xl text-gray font-normal">
+        <h5 class="flex items-center justify-center text-2xl text-black font-normal">
+
           <img src="/image/logo.svg" alt="logo" class="mr-2 h-[50px] w-[50px]">
           <span> {{ title }} </span>
         </h5>
@@ -138,6 +139,6 @@ async function handleLogin() {
 
 <style scoped>
 .backgroundImg{
-  background-image: url(/image/login_bg.webp);
+  background-image: url(/image/cool-background.png);
 }
 </style>

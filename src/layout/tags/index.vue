@@ -82,11 +82,11 @@ function handleRefresh(tag) {
 </script>
 
 <template>
-  <ScrollX ref="scrollXRef" class="bg-white dark:bg-dark!">
+  <ScrollX ref="scrollXRef" class="bg-white! dark:bg-dark!">
     <NTag
       v-for="tag in tagStore.tags" :key="tag.path"
       ref="tabRefs"
-      class="mx-1 hover:border-blue hover:border-red hover:text-primary"
+      class="mx-1  hover:border-blue hover:border-red hover:text-primary"
       :type="tagStore.activeTag === tag.path ? 'primary' : 'default'"
       :closable="tagStore.tags.length > 1"
       @click="handleTagClick(tag.path)"

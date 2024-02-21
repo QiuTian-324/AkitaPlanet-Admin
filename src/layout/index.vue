@@ -23,7 +23,7 @@ const keepAliveRouteNames = computed(() => {
 </script>
 
 <template>
-  <NLayout has-sider class="h-full w-full">
+  <NLayout has-sider class="h-full w-full ">
     <!-- 左侧边栏 -->
     <NLayoutSider
       bordered
@@ -63,3 +63,4 @@ const keepAliveRouteNames = computed(() => {
     </article>
   </NLayout>
 </template>
+

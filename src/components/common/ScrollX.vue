@@ -134,10 +134,10 @@ defineExpose({
 <template>
   <div ref="wrapper" class="wrapper" @mousewheel.prevent="handleMouseWheel">
     <template v-if="showArrow && isOverflow">
-      <div class="left" @click="handleMouseWheel({ wheelDelta: 120 })">
+      <div class="left bg-[#fff] border-[#e0e0e6] dark:bg-[#18181C] border-[1px] dark:border-[#4F4F52]" @click="handleMouseWheel({ wheelDelta: 120 })">
         <span class="i-ic:baseline-keyboard-arrow-left" />
       </div>
-      <div class="right" @click="handleMouseWheel({ wheelDelta: -120 })">
+      <div class="right  bg-[#fff] border-[#e0e0e6] dark:bg-[#18181C] border-[1px] dark:border-[#4F4F52]" @click="handleMouseWheel({ wheelDelta: -120 })">
         <span class="i-ic:baseline-keyboard-arrow-right" />
       </div>
     </template>
@@ -176,7 +176,7 @@ defineExpose({
   }
   .left,
   .right {
-    background-color: #fff;
+    //background-color: #fff;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -189,7 +189,7 @@ defineExpose({
     justify-content: center;
 
     font-size: 18px;
-    border: 1px solid #e0e0e6;
+    //border: 1px solid #e0e0e6;
     border-radius: 2px;
 
     z-index: 2;

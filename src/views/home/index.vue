@@ -1,11 +1,16 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import { NAvatar, NButton, NCard, NGi, NGradientText, NGrid, NStatistic } from 'naive-ui'
 
 import AppPage from '@/components/common/AppPage.vue'
-import { useUserStore } from '@/store'
+import {useThemeStore, useUserStore} from '@/store'
 import api from '@/api'
+//引入创建的echarts.ts文件
+import echarts from './comps/echarts.js'
+import {GetTransform_Fn} from "@/utils/sayHello.js";
+// import * as echarts from 'echarts';
 
+const themeStore = useThemeStore()
 const { nickname, avatar } = useUserStore()
 
 const homeInfo = ref({
@@ -15,20 +20,145 @@ const homeInfo = ref({
   message_count: 0,
 })
 
+// 在组件中定义图表实例
+let myBar
+let myPie
+
 onMounted(async () => {
-  getOneSentence()
+  // getOneSentence()
   const res = await api.getHomeInfo()
   homeInfo.value = res.data
+
+// 基于准备好的dom，初始化echarts实例
+//   myBar = echarts.init(document.getElementById('bar'));
+  myBar = echarts.init(document.getElementById('bar'))
+  myPie = echarts.init(document.getElementById('pie'))
+
+  updateBar() // 初始加载柱状图表
+  userPie()
+})
+// 创建一个新的主题对象，基于默认的 dark 主题
+const darkTheme = {
+  color: ['#4178b3', '#FFA07A', '#ed5555', '#FFD700', '#ADFF2F', '#B0E0E6', '#9370DB', '#32CD32', '#00FFFF'],  textStyle: {
+    color: 'white' // 设置文字颜色为白色
+  },
+};
+
+// 注册自定义的 dark 主题
+echarts.registerTheme('myDarkTheme', darkTheme);
+
+
+watch(()=>themeStore.darkMode,(value)=>{
+  console.log(1)
+  myBar.dispose() // 销毁旧图表实例
+  myPie.dispose()
+    if (value){
+      // 创建图表实例
+      myBar = echarts.init(document.getElementById('bar'), 'myDarkTheme');
+
+      myPie = echarts.init(document.getElementById('pie'), 'myDarkTheme')
+    }else {
+      // 创建图表实例
+      myBar = echarts.init(document.getElementById('bar'))
+      myPie = echarts.init(document.getElementById('pie'))
+    }
+  updateBar() // 重新加载图表
+  userPie()
 })
 
-// 一言
-const sentence = ref('')
-async function getOneSentence() {
-  fetch('https://v1.hitokoto.cn?c=i')
-    .then(resp => resp.json())
-    .then(data => sentence.value = data.hitokoto)
-    .catch(() => sentence.value = '宠辱不惊，看庭前花开花落；去留无意，望天上云卷云舒。')
+
+const updateBar = () => {
+  // 模拟数据：每周每天的文章数量
+  // const weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+  const articleCounts = [20, 30, 15, 40, 25, 35, 10]
+
+  // 设置图表配置
+  myBar.setOption({
+    title: {
+      text: '文章数据',
+      textStyle: {
+        color: themeStore.darkMode?'white':"black" // 设置标题文字颜色为白色
+      }
+    },
+    tooltip: {
+      trigger: 'axis'
+    },
+    xAxis: {
+      type: 'category',
+      data: ['Golang', 'Java', '前端', 'PHP', '其它']
+    },
+    yAxis: {
+      type: 'value',
+      name: '文章数量'
+    },
+    series: [
+      {
+        name: '文章数量',
+        type: 'bar',
+        data: articleCounts
+      }
+    ]
+  })
 }
+
+const userPie = () => {
+  myPie.setOption({
+    title: {
+      text: '用户数据',
+      textStyle: {
+        color: themeStore.darkMode?'white':"black" // 设置标题文字颜色为白色
+      }
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      top: '5%',
+      left: 'center'
+    },
+    series: [
+      {
+        name: '用户级别占比',
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 10,
+          borderColor: '#fff',
+          borderWidth: 2
+        },
+        label: {
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 20,
+            fontWeight: 'bold'
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: [
+          { value: 3, name: '超级管理员' },
+          { value: 20, name: '管理员' },
+          { value: 30, name: '普通用户' }
+        ]
+      }
+    ]
+  })
+}
+
+// 一言
+// const sentence = ref('')
+// async function getOneSentence() {
+//   fetch('https://v1.hitokoto.cn?c=i')
+//     .then(resp => resp.json())
+//     .then(data => sentence.value = data.hitokoto)
+//     .catch(() => sentence.value = '宠辱不惊，看庭前花开花落；去留无意，望天上云卷云舒。')
+// }
 </script>
 
 <template>
@@ -39,27 +169,27 @@ async function getOneSentence() {
           <NAvatar round :size="60" :src="avatar" />
           <div class="ml-5">
             <p> Hello, {{ nickname }} </p>
-            <NGradientText class="mt-1 op-60" gradient="linear-gradient(90deg, red 0%, green 50%, blue 100%)">
-              {{ sentence }}
+            <NGradientText class="mt-1 op-80 text-black dark:text-white">
+              {{ GetTransform_Fn() }}
             </NGradientText>
           </div>
           <div class="ml-auto flex items-center">
-            <NStatistic label="Stars" class="w-[80px]">
-              <a href="https://github.com/szluyu99/gin-vue-blog" target="_blank">
-                <img
-                  alt="stars"
-                  src="https://badgen.net/github/stars/szluyu99/gin-vue-blog"
-                >
-              </a>
-            </NStatistic>
-            <NStatistic label="Forks" class="ml-10 w-[100px]">
-              <a href="https://github.com/szluyu99/gin-vue-blog" target="_blank">
-                <img
-                  alt="forks"
-                  src="https://badgen.net/github/forks/szluyu99/gin-vue-blog"
-                >
-              </a>
-            </NStatistic>
+<!--            <NStatistic label="Stars" class="w-[80px]">-->
+<!--              <a href="https://github.com/szluyu99/gin-vue-blog" target="_blank">-->
+<!--                <img-->
+<!--                  alt="stars"-->
+<!--                  src="https://badgen.net/github/stars/szluyu99/gin-vue-blog"-->
+<!--                >-->
+<!--              </a>-->
+<!--            </NStatistic>-->
+<!--            <NStatistic label="Forks" class="ml-10 w-[100px]">-->
+<!--              <a href="https://github.com/szluyu99/gin-vue-blog" target="_blank">-->
+<!--                <img-->
+<!--                  alt="forks"-->
+<!--                  src="https://badgen.net/github/forks/szluyu99/gin-vue-blog"-->
+<!--                >-->
+<!--              </a>-->
+<!--            </NStatistic>-->
           </div>
         </div>
       </NCard>
@@ -88,22 +218,11 @@ async function getOneSentence() {
       </NGrid>
 
       <!-- TODO: 完善首页设计 -->
-      <NCard title="项目" size="small" class="mt-4">
-        <template #header-extra>
-          <NButton text type="primary">
-            更多
-          </NButton>
-        </template>
-        <NCard
-          v-for="i in 5" :key="i"
-          class="my-2 w-[300px] flex-shrink-0 cursor-pointer hover:shadow-lg"
-          title="Gin Blog Admin"
-          size="small"
-        >
-          <p class="op-60">
-            这是个基于 gin 开发的博客管理后台
-          </p>
-        </NCard>
+      <NCard title="" size="small" class="mt-4">
+        <div class="flex justify-between w-[100%] h-[520px]">
+          <div id="bar" class="w-[50%] h-[100%]" />
+          <div id="pie" class="w-[40%] h-[100%]" />
+        </div>
       </NCard>
     </div>
   </AppPage>
